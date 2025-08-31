@@ -6,39 +6,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Registration Form</title>
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body class="bg-light">
+<body class="bg-dark">
 
 <div class="container mt-5">
     <div class="card shadow-lg">
         <div class="card-header bg-primary text-white">
-            <h4 class="mb-0" >Payroll Calculator</h4>
+            <h4 class="mb-0">PAYROLL CALCULATOR</h4>
         </div>
         <div class="card-body">
-            <form action="computesala.php" method="POST">
+            <form action="compute.php" method="POST">
                 <!-- Full Name -->
-                <div class="mb-1">
-                    <label for="fullname" class="form-label">Employee Name</label>
-                    <input type="text" name="fullname" id="fullname" class="form-control" placeholder="Enter your full name" required>
-                </div>
-                <!-- Days of Work -->
-                <div class="mb-2">
-                    <label for="fullname" class="form-label">Total Days of Work</label>
-                    <input type="number" name="days" id="" class="form-control" placeholder="" required>
-                </div>
                 <div class="mb-3">
-                    <label for="fullname" class="form-label">Daily Rate</label>
-                    <input type="number" name="rate" id="" class="form-control" placeholder="" required>
-                </div>        
-                <div class="mb-2">
-                    <label for="fullname" class="form-label">Cash Advance</label>
-                    <input type="number" name="adv" id="" class="form-control" placeholder="" required>
+                    <label for="employee" class="form-label">Employee Name</label>
+                    <input type="text" name="employee" id="employee" class="form-control" placeholder="Enter Your Full Name" required>
                 </div>
+
+                <!-- days -->
+                <div class="mb-3">
+                    <label for="days" class="form-label">Total Days of Work</label>
+                    <input type="number" name="days" id="days" class="form-control" placeholder="Enter Days Worked" required>
+                </div>
+
+                <!-- rate -->
+                <div class="mb-3">
+                    <label for="rate" class="form-label">Daily Rate</label>
+                    <input type="number" name="rate" id="rate" class="form-control" rows="2" placeholder="Enter Daily Rate" required>
+                </div>
+
+                <!-- advance -->
+                <div class="mb-3">
+                    <label for="advance" class="form-label">Cash Advance</label>
+                    <input type="number" name="advance" id="advance" class="form-control" required>
+                </div>
+
+
                 <!-- Submit Button -->
                 <div class="text-end">
-                    <button type="submit" class="btn btn-success">Generate Payslip</button>
+                    <button type="submit" class="btn btn-success">Register</button>
                 </div>
             </form>
         </div>
@@ -56,7 +62,6 @@
 
 
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -65,48 +70,62 @@
     <title>Registration Details</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        ul { list-style-type: none; }
+        .net { color: green; font-size: 1.2em; }
+    </style>
 </head>
-<body class="bg-light">
+<body class="bg-dark">
 
 <div class="container mt-5">
     <div class="card shadow-lg">
         <div class="card-header bg-success text-white">
-            <h4 class="mb-0">Registration Successful</h4>
+            <h4 class="mb-0">Employee Payslip</h4>
         </div>
         <div class="card-body">
-            <?php
-                    $work = $_POST['num2'];
-                    $rate = $_POST['num3'];
-                    $adv = $_POST['num4'];
-
-
-
-
-                if($_SERVER['REQUEST_METHOD'] == "POST"){
-                    $fullname = htmlspecialchars($_POST['fullname']);
-                    $dayswork = htmlspecialchars($_POST['dayswork']);
-                    $adress = htmlspecialchars($_POST['address']);
-                    $birthdate = htmlspecialchars($_POST['birthdate']);
-
-                }
-                else{
-                    echo "<div class='alert alert-danger'> No data received.</div>";
-                    exit();
-                }
+            <?php 
+            if ($_SERVER ['REQUEST_METHOD'] == "POST"){
+                $employee = htmlspecialchars($_POST['employee']);
+                $days = htmlspecialchars($_POST ['days']);
+                $rate = htmlspecialchars($_POST ['rate']);
+                $advance = htmlspecialchars($_POST ['advance']);
+                $gross = $days * $rate;
+                $tax = $gross * 0.02;
+                $sss = $gross * 0.015;
+                $pagibig = 50;
+                $deductions = $tax + $sss + $pagibig + $advance;
+                $net = $gross - $deductions;
+            }else{
+                echo "<div class='alert alert-danger'> No data received. </div>";
+                exit();
+            }
             ?>
-            <p class="lead">Here are the details you submitted:</p>
            
-            <ul class="list-group">
-                <li class="list-group-item"><strong>Full Name:</strong> <?=$fullname; ?> </li>
-                <li class="list-group-item"><strong>Email:</strong> <?=$email;?>  </li>
-                <li class="list-group-item"><strong>Address:</strong> <?=$adress;?>  </li>
-                <li class="list-group-item"><strong>Birthdate:</strong> <?=$birthdate; ?> </li>
-                <li class="list-group-item"><strong>Course:</strong> <?=$course;?>  </li>
-                <li class="list-group-item"><strong>Gender:</strong> <?=$gender;?>  </li>
+            <ul>
+                <li><strong>Employee Name:</strong> <?=$employee;?> </li>
+                <li><strong>Total Days Worked:</strong> <?=$days;?> </li>
+                <li><strong>Daily Rate:</strong> ₱<?=$rate;?> </li>
+            </ul>
+
+            <hr>
+
+            <ul>
+                <li><strong>Gross Pay:</strong> ₱<?=$gross;?> </li>
+                <li><strong>Tax (2%):</strong> ₱<?=$tax; round($tax, 2)?> </li>
+                <li><strong>SSS (1.5%):</strong> ₱<?=$sss; round($sss, 2)?> </li>
+                <li><strong>Pag-ibig:</strong> ₱<?=$pagibig;?> </li>
+                <li><strong>Cash Advance:</strong> ₱<?=$advance;?> </li>
+            </ul>
+
+            <hr>
+
+            <ul>
+                <li><strong>Total Deductions:</strong> ₱<?= $deductions; round($deductions, 2);?></li>
+                <li class="net"><strong>Net Pay:</strong> ₱<?=$net; round($net, 2); ?></li>
             </ul>
 
             <div class="mt-4">
-                <a href="index.php" class="btn btn-primary">Register Another Student</a>
+                <a href="index.php" class="btn btn-primary">Back</a>  
             </div>
         </div>
     </div>
